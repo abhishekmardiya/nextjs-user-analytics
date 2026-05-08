@@ -37,4 +37,4 @@ You could point `navigator.sendBeacon` at mockapi.io directly from the browser f
 
 ## TODO
 
-If the user goes offline, sendBeacon() fails silently and the events are lost because it does not provide retry handling. To avoid this, events can be temporarily stored in localStorage and retried once the user comes back online
+If the user goes offline, `sendBeacon()` fails silently and the events are lost because it does not provide retry handling. To avoid this, events can be temporarily stored in localStorage and retried once the user comes back online
