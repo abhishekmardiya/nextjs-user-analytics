@@ -2,6 +2,10 @@
 
 A lightweight and scalable analytics tracking system built with Next.js using `navigator.sendBeacon()` for reliable event delivery. Supports event batching, tab close handling, visibility change tracking, payload threshold flushing, and minimal API calls for efficient real-time analytics collection.
 
+## Note
+
+If you plan to use a similar analytics approach for **real users** (especially in the EU/EEA/UK), make sure you handle **GDPR** and any other applicable privacy rules yourself—e.g. lawful basis, clear information, consent or opt-out where required, data minimization, retention, and agreements with vendors. This repo is a technical demo and does not implement compliance for you.
+
 ## What we track
 
 The app tracks page time and click events.
