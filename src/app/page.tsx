@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import { RealEstateTrackingDemo } from "@/components/RealEstateTrackingDemo";
+import { TrackingDemo } from "@/components/TrackingDemo";
 import { ANALYTICS_BATCH_FLUSH_EVENT_THRESHOLD } from "@/lib/analyticsBatch";
 
 const trackingNoteCodeClass =
@@ -59,7 +59,7 @@ export default function Home() {
           </div>
         </div>
 
-        <RealEstateTrackingDemo />
+        <TrackingDemo />
       </main>
     </div>
   );
