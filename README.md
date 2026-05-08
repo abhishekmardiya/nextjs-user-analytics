@@ -17,3 +17,7 @@ Events are POSTed as JSON via **`navigator.sendBeacon`** (`/api/analytics/events
 - The queue reaches the **event threshold** (currently `ANALYTICS_BATCH_FLUSH_EVENT_THRESHOLD` in `src/lib/analyticsBatch.ts`)
 
 `sendBeacon` payloads are capped (on the order of **64 KB** per browser). Batching avoids losing data on unload while the threshold avoids growing a single payload past that limit if the user stays on one tab for a long time.
+
+## TODO
+
+If the user goes offline, sendBeacon() fails silently and the events are lost because it does not provide retry handling. To avoid this, events can be temporarily stored in localStorage and retried once the user comes back online

@@ -4,11 +4,6 @@ import { useEffect } from "react";
 
 import { flushAnalyticsEvents } from "@/lib/analyticsBatch";
 
-/**
- * Flushes queued analytics when the batch hits the event threshold (see analyticsBatch)
- * and when the tab is hidden or unloading.
- * Mount after components that enqueue on the same lifecycle (e.g. PageTimeTracking) so their listeners run first inside the same event turn.
- */
 export const AnalyticsBatchTransport = () => {
   useEffect(() => {
     const flushOnUnload = () => {
