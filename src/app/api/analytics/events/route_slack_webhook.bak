@@ -1,34 +1,40 @@
 import { NextResponse } from "next/server";
 
-const MOCK_API_EVENTS_URL = process.env.MOCK_API_EVENTS_URL ?? "";
+const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL;
 
-const postEventsToMockApi = async (events: unknown) => {
+async function postEventsToSlack(events: unknown[]) {
+  const url = SLACK_WEBHOOK_URL;
+  if (!url || url.trim() === "") {
+    return;
+  }
+
   try {
-    const response = await fetch(MOCK_API_EVENTS_URL, {
+    const text = "\n```json\n" + JSON.stringify(events, null, 2) + "\n```";
+    const response = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ events }),
+      body: JSON.stringify({ text }),
     });
 
     if (!response.ok) {
       console.error(
-        "[analytics/events] MockAPI POST failed",
+        "[analytics/events] Slack webhook failed",
         response.status,
         await response.text()
       );
     }
   } catch (error) {
-    console.error("[analytics/events] MockAPI POST error", error);
+    console.error("[analytics/events] Slack webhook error", error);
   }
-};
+}
 
 export async function POST(request: Request) {
   try {
     const events = await request.json();
-    console.log("[analytics/events]", JSON.stringify(events, null, 2));
+    console.info("[analytics/events]", JSON.stringify(events, null, 2));
 
-    if (MOCK_API_EVENTS_URL) {
-      await postEventsToMockApi(events);
+    if (SLACK_WEBHOOK_URL) {
+      await postEventsToSlack(events);
     }
   } catch (error: unknown) {
     console.error("[analytics/events] Error", error);

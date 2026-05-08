@@ -18,20 +18,18 @@ Events are POSTed as JSON via `navigator.sendBeacon` (`/api/analytics/events`). 
 
 `sendBeacon` payloads are capped (on the order of **64 KB** per browser). Batching avoids losing data on unload while the threshold avoids growing a single payload past that limit if the user stays on one tab for a long time.
 
-## Slack webhook (third-party APIs)
+## MockAPI (third-party REST)
 
-This project uses a Slack Incoming Webhook as an example so you can see a real third‑party endpoint wired up end‑to‑end. The same pattern applies to other HTTP APIs.
+> NOTE: The MockAPI step is optional for how you inspect data: batches are already printed in the dev terminal (`console.log`, `[analytics/events]`). You only need a custom `MOCKAPI_EVENTS_URL` if you want rows in your own [mockapi.io](https://mockapi.io/) project (the bundled demo URL is just a shortcut).
 
-You do not have to use a Next.js Route Handler. Nothing here requires it: you could point `navigator.sendBeacon` straight at many third‑party URLs from the browser and skip `/api/analytics/events` entirely. Reasons this repo keeps `/api/analytics/events` anyway:
+`POST /api/analytics/events` (see `src/app/api/analytics/events/route.ts`) logs each batch in the terminal, then POSTs JSON to [mockapi.io](https://mockapi.io/) — a hosted mock REST API useful for prototyping and seeing requests without a real backend. You define projects and collections (here a resource like `/events`); payloads show up as created records.
 
-1. Local development — the handler logs batches with `console.info` (look for `[analytics/events]` in the dev terminal).
-2. Secrets — webhook URLs stay in `process.env` on the server instead of shipping with client JavaScript or fighting CORS (many providers, Slack included, are not reliable as browser‑side webhook targets).
+You could point `navigator.sendBeacon` at mockapi.io directly from the browser for some setups, but this repo uses a Next route so you avoid CORS quirks, keep URLs server-side (`MOCKAPI_EVENTS_URL` optional override), and get `console.log` lines tagged `[analytics/events]`.
 
-Local setup:
+### Local notes
 
-1. Create a Slack [Incoming Webhook](https://api.slack.com/messaging/webhooks) and copy the URL.
-2. Add `SLACK_WEBHOOK_URL=...` to `.env`.
-3. Restart `npm run dev`. When a batch hits `/api/analytics/events`, the route logs the payload and, if configured, forwards a formatted `text` payload to Slack.
+1. Browse [mockapi.io](https://mockapi.io/), create your own mock project if the bundled demo URL expires or hits limits.
+2. Optional: set `MOCKAPI_EVENTS_URL` in `.env` to your resource URL, then restart `npm run dev`.
 
 ## TODO
 
