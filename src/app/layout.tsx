@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 
 import "./globals.css";
+import { AnalyticsBatchTransport } from "@/components/AnalyticsBatchTransport";
 import { PageTimeTracking } from "@/components/PageTimeTracking";
 
 const navLinkClassName =
@@ -56,6 +57,7 @@ export default function RootLayout({
         </header>
         <div className="flex min-h-0 flex-1 flex-col">
           <PageTimeTracking />
+          <AnalyticsBatchTransport />
           {children}
         </div>
       </body>

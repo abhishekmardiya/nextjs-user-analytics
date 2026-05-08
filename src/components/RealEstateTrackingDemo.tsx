@@ -1,6 +1,6 @@
 "use client";
 
-import { sendAnalyticsEvent } from "@/lib/sendAnalyticsEvent";
+import { enqueueAnalyticsEvent } from "@/lib/analyticsBatch";
 
 const demoButtonClassName =
   "cursor-pointer rounded-full border border-zinc-300 bg-white/90 px-4 py-2.5 text-sm font-medium text-zinc-800 shadow-sm transition-[background-color,border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-zinc-400 hover:bg-white hover:shadow-md active:translate-y-0 dark:border-zinc-600 dark:bg-zinc-800/90 dark:text-zinc-100 dark:hover:border-zinc-500 dark:hover:bg-zinc-800 dark:hover:shadow-zinc-950/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-zinc-500 dark:focus-visible:ring-offset-zinc-900";
@@ -8,9 +8,9 @@ const demoButtonClassName =
 export const RealEstateTrackingDemo = () => {
   const handleClickEvent = (
     type: string,
-    metadata: Record<string, unknown>
+    metadata: Record<string, unknown>,
   ) => {
-    sendAnalyticsEvent({ type, metadata });
+    enqueueAnalyticsEvent({ type, metadata });
   };
 
   return (

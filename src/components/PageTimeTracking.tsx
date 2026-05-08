@@ -2,17 +2,19 @@
 
 import { useEffect, useRef } from "react";
 
-import { sendAnalyticsEvent } from "@/lib/sendAnalyticsEvent";
-
-// accumulates milliseconds only while the tab is visible, sends that total when the tab goes hidden or the user leaves, and resets only the per-segment start time when they return—so repeated hide/show visits add up correctly in totalTimeRef.
+import { enqueueAnalyticsEvent } from "@/lib/analyticsBatch";
 
 export const PageTimeTracking = () => {
   const totalTimeRef = useRef(0);
   const startTimeRef = useRef(Date.now());
 
   useEffect(() => {
+    let wasHidden = document.hidden;
+    let segmentOpen = !document.hidden;
+
     const startTracking = () => {
       startTimeRef.current = Date.now();
+      segmentOpen = true;
     };
 
     const stopTracking = () => {
@@ -21,34 +23,51 @@ export const PageTimeTracking = () => {
       totalTimeRef.current += currentSessionTime;
     };
 
-    const sendAnalytics = () => {
+    const recordPageTimeAndEnqueue = () => {
+      if (!segmentOpen) {
+        return;
+      }
+
+      segmentOpen = false;
       stopTracking();
 
-      sendAnalyticsEvent({
+      enqueueAnalyticsEvent({
         type: "page_time",
         metadata: {
           totalTimeInSeconds: Math.floor(totalTimeRef.current / 1000),
           pageUrl: window.location.pathname,
         },
       });
+
+      totalTimeRef.current = 0;
     };
 
     const handleVisibilityChange = () => {
-      if (document.hidden) {
-        sendAnalytics();
-      } else {
+      const { hidden } = document;
+
+      if (hidden && !wasHidden) {
+        recordPageTimeAndEnqueue();
+      } else if (!hidden && wasHidden) {
         startTracking();
+      }
+
+      wasHidden = hidden;
+    };
+
+    const handleBeforeUnload = () => {
+      if (!document.hidden) {
+        recordPageTimeAndEnqueue();
       }
     };
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
-    window.addEventListener("beforeunload", sendAnalytics);
+    window.addEventListener("beforeunload", handleBeforeUnload);
 
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
 
-      window.removeEventListener("beforeunload", sendAnalytics);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, []);
 
