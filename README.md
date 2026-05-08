@@ -1,6 +1,6 @@
 # User analytics
 
-Client-side tracking in this app uses an **in-memory queue**. Events accumulate until they are flushed in one request.
+A lightweight and scalable analytics tracking system built with Next.js using `navigator.sendBeacon()` for reliable event delivery. Supports event batching, tab close handling, visibility change tracking, payload threshold flushing, and minimal API calls for efficient real-time analytics collection.
 
 ## What we track
 

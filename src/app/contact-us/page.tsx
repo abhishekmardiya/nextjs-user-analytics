@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 const linkClassName =
-  "text-sm font-medium text-violet-600 underline-offset-4 hover:underline dark:text-violet-400";
+  "text-sm font-medium text-blue-600 underline-offset-4 hover:underline dark:text-blue-400";
 
 export default function ContactUsPage() {
   return (

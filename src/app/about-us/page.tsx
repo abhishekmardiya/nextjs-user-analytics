@@ -10,7 +10,7 @@ export default function AboutUsPage() {
       <Link
         href="/"
         prefetch={false}
-        className="text-sm font-medium text-violet-600 underline-offset-4 hover:underline dark:text-violet-400"
+        className="text-sm font-medium text-blue-600 underline-offset-4 hover:underline dark:text-blue-400"
       >
         Back to home
       </Link>
