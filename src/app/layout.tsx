@@ -1,13 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import Link from "next/link";
 
 import "./globals.css";
 import { AnalyticsBatchTransport } from "@/components/AnalyticsBatchTransport";
 import { PageTimeTracking } from "@/components/PageTimeTracking";
-
-const navLinkClassName =
-  "font-medium text-violet-600 underline-offset-4 hover:underline dark:text-violet-400";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,26 +31,6 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col font-sans">
-        <header className="shrink-0 border-b border-zinc-200 bg-zinc-100/90 px-4 py-3 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-950/90">
-          <nav
-            aria-label="Main"
-            className="mx-auto flex max-w-3xl flex-wrap items-center gap-x-6 gap-y-2 text-sm"
-          >
-            <Link href="/" className={navLinkClassName}>
-              Home
-            </Link>
-            <Link href="/about-us" target="_blank" className={navLinkClassName}>
-              About us
-            </Link>
-            <Link
-              href="/contact-us"
-              target="_blank"
-              className={navLinkClassName}
-            >
-              Contact us
-            </Link>
-          </nav>
-        </header>
         <div className="flex min-h-0 flex-1 flex-col">
           <PageTimeTracking />
           <AnalyticsBatchTransport />

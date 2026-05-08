@@ -10,7 +10,7 @@ export default function ContactUsPage() {
         Contact us
       </h1>
 
-      <Link href="/" className={linkClassName}>
+      <Link href="/" prefetch={false} className={linkClassName}>
         Back to home
       </Link>
     </div>

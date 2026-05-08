@@ -4,8 +4,10 @@ Client-side tracking in this app uses an **in-memory queue**. Events accumulate 
 
 ## What we track
 
-- Click events
-- Time spent on pages
+The app tracks page time and click events.
+
+- **Page time** — seconds on each route when the tab is hidden or the user leaves
+- **Clicks** — sample actions (e.g. map, contact, brochure) from the demo controls
 
 ## How batches are sent
 
