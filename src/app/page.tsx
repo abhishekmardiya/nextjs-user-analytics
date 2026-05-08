@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { RealEstateTrackingDemo } from "@/components/RealEstateTrackingDemo";
+import { ANALYTICS_BATCH_FLUSH_EVENT_THRESHOLD } from "@/lib/analyticsBatch";
 
 export default function Home() {
   return (
@@ -9,8 +10,8 @@ export default function Home() {
         aria-hidden
         className="pointer-events-none absolute inset-0 overflow-hidden"
       >
-        <div className="absolute -left-40 top-0 h-[28rem] w-[28rem] rounded-full bg-violet-400/20 blur-3xl dark:bg-violet-600/20" />
-        <div className="absolute -right-40 bottom-0 h-[28rem] w-[28rem] rounded-full bg-cyan-400/15 blur-3xl dark:bg-cyan-600/15" />
+        <div className="absolute -left-40 top-0 h-112 w-md rounded-full bg-violet-400/20 blur-3xl dark:bg-violet-600/20" />
+        <div className="absolute -right-40 bottom-0 h-112 w-md rounded-full bg-cyan-400/15 blur-3xl dark:bg-cyan-600/15" />
         <div className="absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/40 blur-2xl dark:bg-zinc-800/30" />
       </div>
 
@@ -29,9 +30,9 @@ export default function Home() {
               Batched user-action tracking
             </h1>
             <p className="text-pretty text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-              Clicks are queued and sent together—after a short interval, when
-              the batch is full, or when you leave the tab. Check the terminal
-              for{" "}
+              Clicks are queued and sent together after{" "}
+              {ANALYTICS_BATCH_FLUSH_EVENT_THRESHOLD} events, or when you hide
+              this tab or leave the page. Check the terminal for{" "}
               <code className="rounded-md bg-zinc-200/80 px-1.5 py-0.5 text-xs font-mono text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200">
                 [analytics/events]
               </code>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-
 import { enqueueAnalyticsEvent } from "@/lib/analyticsBatch";
 
 export const PageTimeTracking = () => {

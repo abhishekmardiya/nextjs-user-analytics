@@ -2,22 +2,15 @@
 
 import { useEffect } from "react";
 
-import {
-  ANALYTICS_BATCH_FLUSH_INTERVAL_MS,
-  flushAnalyticsEvents,
-} from "@/lib/analyticsBatch";
+import { flushAnalyticsEvents } from "@/lib/analyticsBatch";
 
 /**
- * Flushes queued analytics on an interval and when the tab is hidden / unloading.
- * Mount after components that enqueue on the same lifecycle (e.g. PageTimeTracking)
- * so their listeners run first inside the same event turn.
+ * Flushes queued analytics when the batch hits the event threshold (see analyticsBatch)
+ * and when the tab is hidden or unloading.
+ * Mount after components that enqueue on the same lifecycle (e.g. PageTimeTracking) so their listeners run first inside the same event turn.
  */
 export const AnalyticsBatchTransport = () => {
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      flushAnalyticsEvents();
-    }, ANALYTICS_BATCH_FLUSH_INTERVAL_MS);
-
     const flushOnUnload = () => {
       flushAnalyticsEvents();
     };
@@ -28,12 +21,23 @@ export const AnalyticsBatchTransport = () => {
       }
     };
 
+    // FIXME:implement this
+    const handleOffline = () => {
+      // console.log("offline");
+      // localStorage.setItem("analytics-queue", "test");
+    };
+
+    const handleOnline = () => {};
+
     window.addEventListener("beforeunload", flushOnUnload);
+    window.addEventListener("offline", handleOffline);
+    window.addEventListener("online", handleOnline);
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
-      clearInterval(intervalId);
       window.removeEventListener("beforeunload", flushOnUnload);
+      window.removeEventListener("offline", handleOffline);
+      window.removeEventListener("online", handleOnline);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       flushAnalyticsEvents();
     };
