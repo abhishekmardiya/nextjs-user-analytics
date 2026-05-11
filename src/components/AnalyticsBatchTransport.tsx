@@ -32,8 +32,9 @@ export const AnalyticsBatchTransport = () => {
     );
   };
 
+  // Sends batches persisted to localStorage while offline: on the window "online" event and once on mount (see useEffect).
   const handleOnline = () => {
-    // Browser-level: true when the UA thinks there is network connectivity (not a guarantee the host is reachable).
+    // Coarse signal: the UA believes there is connectivity (not proof the server is reachable).
     if (!navigator.onLine) {
       return;
     }
