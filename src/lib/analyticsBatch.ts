@@ -15,13 +15,20 @@ function formatISTTimeHmms(now: Date) {
   }).format(now);
 }
 
-type QueuedAnalyticsEvent = {
+export type QueuedAnalyticsEvent = {
   type: string;
   metadata: Record<string, unknown>;
   time: string;
 };
 
+export const ANALYTICS_QUEUE_LOCAL_STORAGE_KEY = "analytics-queue";
+
 const queue: QueuedAnalyticsEvent[] = [];
+
+// Returns a snapshot of pending in-memory events
+export const getQueuedAnalyticsEvents = (): QueuedAnalyticsEvent[] => {
+  return [...queue];
+};
 
 export const enqueueAnalyticsEvent = ({
   type,
@@ -41,25 +48,33 @@ export const enqueueAnalyticsEvent = ({
   }
 };
 
-export const flushAnalyticsEvents = () => {
-  if (!queue.length) {
-    return;
+export const sendAnalyticsEventsBeacon = (
+  events: QueuedAnalyticsEvent[]
+): boolean => {
+  if (!events.length) {
+    return false;
   }
 
-  // Remove all events from the queue and store them in 'events'
-  // splice(0, queue.length) extracts all elements from the queue array,
-  // clearing the queue and returning the removed elements as a new array called 'events'
-  const events = queue.splice(0, queue.length);
   const payload = JSON.stringify({
     generateAt: formatISTTimeHmms(new Date()),
     events,
   });
 
   // `Blob` is used with `sendBeacon()` to set the correct `Content-Type`. Without it, the browser usually sends the payload as `text/plain`, while with `Blob` it sends it as `application/json`.
-  navigator.sendBeacon(
+  return navigator.sendBeacon(
     ANALYTICS_EVENTS_PATH,
     new Blob([payload], {
       type: "application/json",
     })
   );
+};
+
+export const flushAnalyticsEvents = () => {
+  if (!queue.length) {
+    return;
+  }
+
+  // extracts all elements from the queue array, draining the queue and returning the removed elements as a new array called 'events'
+  const events = queue.splice(0, queue.length);
+  sendAnalyticsEventsBeacon(events);
 };

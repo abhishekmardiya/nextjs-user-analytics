@@ -2,27 +2,55 @@
 
 import { useEffect } from "react";
 
-import { flushAnalyticsEvents } from "@/lib/analyticsBatch";
+import {
+  ANALYTICS_QUEUE_LOCAL_STORAGE_KEY,
+  flushAnalyticsEvents,
+  getQueuedAnalyticsEvents,
+  sendAnalyticsEventsBeacon,
+} from "@/lib/analyticsBatch";
 
 export const AnalyticsBatchTransport = () => {
-  useEffect(() => {
-    const flushOnUnload = () => {
+  const flushOnUnload = () => {
+    flushAnalyticsEvents();
+  };
+
+  const handleVisibilityChange = () => {
+    if (document.hidden) {
       flushAnalyticsEvents();
-    };
+    }
+  };
 
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        flushAnalyticsEvents();
-      }
-    };
+  const handleOffline = () => {
+    const events = getQueuedAnalyticsEvents();
+    if (!events.length) {
+      return;
+    }
 
-    // FIXME:implement this
-    const handleOffline = () => {
-      // console.log("offline");
-      // localStorage.setItem("analytics-queue", "test");
-    };
+    localStorage.setItem(
+      ANALYTICS_QUEUE_LOCAL_STORAGE_KEY,
+      JSON.stringify(events)
+    );
+  };
 
-    const handleOnline = () => {};
+  const handleOnline = () => {
+    // Browser-level: true when the UA thinks there is network connectivity (not a guarantee the host is reachable).
+    if (!navigator.onLine) {
+      return;
+    }
+
+    const events = localStorage.getItem(ANALYTICS_QUEUE_LOCAL_STORAGE_KEY);
+    const parsedEvents = events ? JSON.parse(events) : [];
+
+    if (!parsedEvents.length) {
+      return;
+    }
+
+    localStorage.removeItem(ANALYTICS_QUEUE_LOCAL_STORAGE_KEY);
+    sendAnalyticsEventsBeacon(parsedEvents);
+  };
+
+  useEffect(() => {
+    handleOnline();
 
     window.addEventListener("beforeunload", flushOnUnload);
     window.addEventListener("offline", handleOffline);
